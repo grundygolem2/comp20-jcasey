@@ -1,0 +1,7 @@
+John Casey (jcasey03)
+I believe I have successfully completed the assignnment
+I got significant clarity from
+http://blog.brianjohnsondesign.com/responsive-background-image-sprites-css-tutorial/
+and
+http://stackoverflow.com/questions/21810262/responsive-sprites-percentages
+I spent 3 hours on this assignment.
