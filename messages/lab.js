@@ -18,8 +18,3 @@ function output(messages) {
 	}
 	document.getElementById("messages").innerHTML = output;
 }
-
-function parse1() {
-	document.getElementById("messages").innerHTML = '<p>testgood</p>';
-}
-
