@@ -3,7 +3,7 @@ function parse() {
 	var url = 'data.json';
 	xmlhttp.onreadystateschange = function() {
 		if (xmlhttp.readyState == 4) {
-			window.log('in if')
+			console.log('in if')
 			var messages = JSON.parse(xmlhttp.responseText);
 			output(messages);
 		}
