@@ -1,15 +1,17 @@
 function parse() {
+	console.log('in parse');
 	var xmlhttp = new XMLHttpRequest();
 	var url = 'data.json';
 	xmlhttp.onreadystateschange = function() {
 		if (xmlhttp.readyState == 4) {
-			console.log('in if')
+			console.log('in if');
 			var messages = JSON.parse(xmlhttp.responseText);
 			output(messages);
 		}
 	}
 	xmlhttp.open("GET", url, true);
 	xmlhttp.send();
+	console.log('end of parse');
 }
 function output(messages) {
 	var output = '';
