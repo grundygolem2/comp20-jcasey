@@ -2,7 +2,7 @@ function parse() {
 	var xmlhttp = new XMLHttpRequest();
 	var url = 'data.json';
 	xmlhttp.onreadystateschange = function() {
-		if (xml.htp.readyState == 4 && xmlhttp.status == 200) {
+		if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 			var messages = JSON.parse(xmlhttp.responseText);
 			output(messages);
 		}
