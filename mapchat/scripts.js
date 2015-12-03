@@ -26,7 +26,7 @@ function renderMap(lat,lng)
       placeMarkers(data, lat, lng);
     }
   };
-  req.open("POST", "https://secret-about-box.herokuapp.com/sendLocation",true);
+  req.open("POST", "https://secure-hamlet-4685.herokuapp.com/sendLocation",true);
   req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
   req.send("login=HarleyRhoden&lat="+lat+"&lng="+lng+"&message=Mr_Spooky_Skeletal");
 }
