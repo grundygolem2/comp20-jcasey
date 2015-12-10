@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    Security faults in Janeth Jepkogei's Assignment 3
+    </title>
+</head>
+
+<body>
+  <h1>Security Assessment of Assignment 3</h1>
+  <p>John Casey</p>
+  <h2>Introduction</h2>
+  <p>This assignment will inspect the security of Janeth's assignment 3, and note the vulnerabilities found. Assignment 3 was to create a server which could provide data to Assignment 2, and as such had some minimalistic log-in features and a database of locations. In addition, this analysis will note to what extent these vulerabilities are serious, and provide some suggestions as to how to fix them.</p>
+  <h2>Methodology</h2>
+  <p>My Methodology was to read Janeth's code, and try and find vulnerabilities. When I found a potential vulnerability, I tested it with cURL. If it proved to be a vulnerability, I included it in my results.</p>
+  <h2>Abstract of Findings</h2>
+  <p>Most faults in web security can be put attributed to insufficiently clening input data, allowing malcious or erronious data to be passed through. However, when it comes to logins and other semi-protected information, this project allows illegitimate users to potentially access others data. Finally, this project is susceptible to multiple forms of brute force attacks, which can render it inoperable. </p>
+  <h2>Issues Found</h2>
+  <ol>
+    <li><strong>Brute Force Attack</strong>
+      <ul>
+        <li>Affects /latest.json</li>
+        <li><strong>Medium:</strong> This could be a serious vulnerability allowing non-users to access the location of users based on their data. However, it should be somewhat easy to resolve.</li>
+        <li>Attempts to get /latest.json are not monitored, so one can brute force an attack which could try any number of logins to try and determine where those users were. For example, one could run a modified version of my testing code <pre><code>#!/bin/bash
+
+b=0
+while [ "$b" -lt "1000" ]
+do
+  curl https://dry-beach-7297.herokuapp.com/latest.json?login=$b
+  let b=b+1
+done
+echo "done"</code></pre> which would loop over the characer space <code>a-z A-Z 0-9</code> and could retrieve significant information about users. Fortunately, the current hosting service is relatively slow, so such an attack, while feasible, would take significant time.</li>
+        <li>This problem could be fixed in a few ways. Having the server log IP addresses could help prevent such brute force attacks. Alternately, one could require a password in combination with a login, which would make such brute force attacks much more difficult</li>
+      </ul></li>
+    <li><strong>Cross-Site Scripting</strong>
+      <ul>
+        <li>Affects /sendLocation</li>
+        <li><strong>High:</strong> One can put unescaped HTML in the message field using cURL, allowing one to write some cross side scripting affecting other end users, as all end users download the same json from /sendLocation. This could be relatively easily solved by escaping user's input. </li>
+        <li> I used <code>curl --data "login=mchow&lng=4&lat=4&message=$m" https://dry-beach-7297.herokuapp.com/sendLocation > test.html</code>, where $m was <xmp>'<ul><li>1</li><li>2</li><li>3</li></ul>'</xmp>
+      <xmp><img src="http://www.w3schools.com/html/html5.gif"></xmp> <xmp><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script>$(document).ready(function(){window.location.replace("http://www.google.com");}); </script>"</xmp></li>
+      <li> All three injections work, and https://dry-beach-7297.herokuapp.com/ now redirects to google.com, after a flash where one can see a list.</li>
+    </ul></li>
+    <li><strong>Database Balooning</strong>
+      <ul>
+        <li>Affects /sendLocation, /</li>
+        <li><strong>Medium:</strong> Using a script, one can call /sendLocation innumerable times. Each of these gets inputs gets added to the database, and the entire database is returned upon a call to /. As a result, the call to / becomes more and more bloated, eventually becoming unuseable.
+        <li> I used <pre><code> #!/bin/bash
+m="yo"
+b=0
+while [ "$b" -lt "1000" ]
+do
+  curl --data "login=mchow&lng=[1,2,3]&lat=4&message=$m" https://dry-beach-7297.herokuapp.com/sendLocation
+  let b=b+1
+done
+echo "done" </code></pre> and the response time gradually became exceptionally slow. </li>
+        <li>Like with the first vulnerability, this could be fixed by monitoring IP addresses. It might also be fixable by implementing a database cleanup algorithm, although this could be challenging. </li>
+      </ul></li>
+  </ol>
+
+
+  <h2>Conclusion</h2>
+  <p>There are significant vulnerabilities in this assignment. Unfortunately, while these specific vulnerabilities are patchable, the overall structural problem of open ended input and output leave the website susceptible to a number of other attacks. Restructuring to include passwords, cleaning input, as well as defending from brute force style attacks would require significant work, but would greatly improve the security and stability of the site. I would quote this at $750, including a second sweep of security tests.</p>
+</body>
+</html>
